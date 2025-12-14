@@ -40,7 +40,6 @@ class AuthorResource extends Resource
                     ->image()
                     ->required(),
                 Forms\Components\Textarea::make('bio')
-                    ->required()
             ]);
     }
 

@@ -57,7 +57,15 @@ class NewsResource extends Resource
                 tables\Columns\TextColumn::make('title')->sortable()->searchable(),
                 tables\Columns\TextColumn::make('author.name')->label('Author')->sortable()->searchable(),
                 tables\Columns\TextColumn::make('newsCategory.title')->label('Category')->sortable()->searchable(),
-                tables\Columns\ImageColumn::make('thumbnail'),
+                tables\columns\TextColumn::make('status')
+                ->badge()
+                ->color(fn (string $state): string => match ($state) {
+                    'draft' => 'gray',
+                    'reviewing' => 'warning',
+                    'published' => 'success',
+                    'rejected' => 'danger',
+                    default => 'gray',
+                }),
                 tables\Columns\TextColumn::make('created_at')->dateTime()->sortable(),
             ])
             ->filters([
@@ -67,6 +75,31 @@ class NewsResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                // Tombol Approve
+                Tables\Actions\Action::make('approve')
+                    ->label('Approve')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->action(fn (News $record) => $record->update(['status' => 'published'])), // <--- PERHATIKAN KOMA DI SINI
+
+                // Tombol Reject
+                Tables\Actions\Action::make('reject')
+                    ->label('Reject')
+                    ->icon('heroicon-o-x-circle')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->form([
+                Forms\Components\Textarea::make('rejection_note')
+                            ->label('Alasan Penolakan')
+                            ->required(),
+                    ])
+                    ->action(function (News $record, array $data) {
+                        $record->update([
+                            'status' => 'rejected',
+                            'rejection_note' => $data['rejection_note'],
+                        ]);
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

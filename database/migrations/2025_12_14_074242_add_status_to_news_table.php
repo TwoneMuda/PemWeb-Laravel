@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('news_categories', function (Blueprint $table) {
-            $table->id();
-            $table->string('title')->unique();
-            $table->string('slug')->unique();
-            $table->timestamps();
+        Schema::table('news', function (Blueprint $table) {
+            //
         });
     }
 
@@ -24,6 +21,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('news_categories');
+        Schema::table('news', function (Blueprint $table) {
+        $table->string('status')->default('draft'); // draft, review, published, rejected
+        $table->text('rejection_note')->nullable();
+        });
     }
 };

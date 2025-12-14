@@ -14,6 +14,8 @@ class News extends Model
         'category_id',
         'created_at',
         'thumbnail',
+        'status',
+        'rejection_note',
     ];
     public function author()
     {
