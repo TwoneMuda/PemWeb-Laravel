@@ -9,10 +9,11 @@ class LandingController extends Controller
 {
     public function index()
     {
+
         $news = News::with(['author', 'newsCategory']) 
             ->where('status', 'published')     
             ->latest()
-            ->get();
+            ->paginate(10);
 
         return view('pages.landing', compact('news'));
     }

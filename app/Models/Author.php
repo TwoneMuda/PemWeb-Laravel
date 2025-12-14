@@ -7,12 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 class Author extends Model
 {
     protected $fillable = [
-        'name',
+        'user_id',
         'username',
         'email',
         'avatar',
         'bio',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function news()
     {

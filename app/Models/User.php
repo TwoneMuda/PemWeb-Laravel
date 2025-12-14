@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -46,5 +47,9 @@ class User extends Authenticatable
         ];
     }
 
+    Public function author()
+    {
+        return $this->hasOne(Author::class);
+    }
     
 }

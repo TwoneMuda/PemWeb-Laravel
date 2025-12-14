@@ -25,7 +25,7 @@
                   
                   {{-- KATEGORI --}}
                   <span class="badge bg-dark position-absolute top-0 end-0 m-3 px-3 py-2 fs-6">
-                      {{ $news->newsCategory->title ?? 'Umum' }}
+                      {{ $news->newsCategory->title }}
                   </span>
               </div>
 

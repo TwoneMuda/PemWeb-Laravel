@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'NesaNews | Berita Terbaru dan Terpercaya')
+@section('title', $category->title)
 
 @section('content')
-  <!-- Daftar Berita -->
-  <div id="halamanUtama" class="flex-grow-1 container mt-5 pt-5">
-      <h2 class="category-title mb-4">Berita Terbaru</h2>
+  <!-- Daftar Berita Kategori -->
+  <div id="halamanKategori" class="flex-grow-1 container mt-5 pt-5">
+      <h2 class="category-title mb-4">{{ $category->title }}</h2>
       
-      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="daftarBerita">
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="daftarBeritaKategori">
         
         {{-- LOOPING DATA DARI CONTROLLER --}}
         @foreach ($news as $item)
@@ -47,10 +47,12 @@
                     </div>
                 </div>
             </div>
-        @endforeach    
+        @endforeach
+
       </div>
-      <div class="pagination-wrapper">
+        <div class="pagination-wrapper">
     {{ $news->links() }}
 </div>
-  </div>
+    </div>
+
 @endsection

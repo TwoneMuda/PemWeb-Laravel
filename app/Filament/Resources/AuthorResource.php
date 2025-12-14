@@ -26,9 +26,12 @@ class AuthorResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\select::make('user_id')
+                    ->label('User')
+                    ->relationship('user', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->required(),
                 Forms\Components\TextInput::make('username')
                     ->required()
                     ->maxLength(255),
@@ -48,7 +51,7 @@ class AuthorResource extends Resource
         return $table
             ->columns([
                 tables\Columns\ImageColumn::make('avatar')->rounded(),
-                tables\Columns\TextColumn::make('name')->sortable()->searchable(),
+                tables\Columns\TextColumn::make('user.name')->sortable()->searchable(),
                 tables\Columns\TextColumn::make('username')->sortable()->searchable(),
                 tables\Columns\TextColumn::make('bio'),
             ])
