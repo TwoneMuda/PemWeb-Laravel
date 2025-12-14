@@ -29,6 +29,16 @@ class NewsResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Section::make()
+                    ->schema([
+                Forms\Components\Placeholder::make('rejection_alert')
+                    ->label('⚠️ Status: Ditolak')
+                    ->content(fn ($record) => $record->rejection_note)
+                    ->extraAttributes(['class' => 'text-danger-600 font-bold']),
+                ])
+                // Hanya muncul jika record ada (mode edit) DAN statusnya 'rejected'
+                ->visible(fn ($record) => $record?->status === 'rejected' && $record?->rejection_note)
+                ->columnSpanFull(),
                 Forms\Components\select::make('author_id')
                     ->relationship('author', 'name')
                     ->required(),
@@ -46,7 +56,7 @@ class NewsResource extends Resource
                     ->required(),
                 Forms\Components\FileUpload::make('thumbnail')
                     ->image()
-                    ->required()
+                    ->required(),
             ]);
     }
 
@@ -58,19 +68,27 @@ class NewsResource extends Resource
                 tables\Columns\TextColumn::make('author.name')->label('Author')->sortable()->searchable(),
                 tables\Columns\TextColumn::make('newsCategory.title')->label('Category')->sortable()->searchable(),
                 tables\columns\TextColumn::make('status')
-                ->badge()
+                ->sortable()->badge()
                 ->color(fn (string $state): string => match ($state) {
                     'draft' => 'gray',
-                    'reviewing' => 'warning',
+                    'review' => 'warning',
                     'published' => 'success',
                     'rejected' => 'danger',
                     default => 'gray',
                 }),
+                
                 tables\Columns\TextColumn::make('created_at')->dateTime()->sortable(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('category')->relationship('newsCategory', 'title'),
                 Tables\Filters\SelectFilter::make('author')->relationship('author', 'name'),
+                Tables\Filters\SelectFilter::make('status')
+                    ->options([
+                        'draft' => 'Draft',
+                        'review' => 'Review',
+                        'published' => 'Published',
+                        'rejected' => 'Rejected',
+                    ]),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -81,7 +99,7 @@ class NewsResource extends Resource
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
                     ->requiresConfirmation()
-                    ->action(fn (News $record) => $record->update(['status' => 'published'])), // <--- PERHATIKAN KOMA DI SINI
+                    ->action(fn (News $record) => $record->update(['status' => 'published'])),
 
                 // Tombol Reject
                 Tables\Actions\Action::make('reject')

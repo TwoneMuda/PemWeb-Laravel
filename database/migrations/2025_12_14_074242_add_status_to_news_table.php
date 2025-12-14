@@ -7,23 +7,25 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Run the migrations. (MENAMBAH KOLOM)
      */
     public function up(): void
     {
         Schema::table('news', function (Blueprint $table) {
-            //
+            // Pindahkan kode ini ke sini:
+            $table->string('status')->default('draft'); 
+            $table->text('rejection_note')->nullable();
         });
     }
 
     /**
-     * Reverse the migrations.
+     * Reverse the migrations. (MENGHAPUS KOLOM)
      */
     public function down(): void
     {
         Schema::table('news', function (Blueprint $table) {
-        $table->string('status')->default('draft'); // draft, review, published, rejected
-        $table->text('rejection_note')->nullable();
+            // Saat rollback, kita hapus kolomnya
+            $table->dropColumn(['status', 'rejection_note']);
         });
     }
 };
